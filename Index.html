@@ -1,0 +1,2973 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>Ads Orbit</title>
+
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="https://adexora.com/cdn/ads.js?id=2189"></script>
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+body{
+  background:#070b12;
+  color:#fff;
+  font-family:Arial,sans-serif;
+  min-height:100vh;
+}
+
+button{
+  font-family:inherit;
+  cursor:pointer;
+}
+
+#loading{
+  position:fixed;
+  inset:0;
+  background:#070b12;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  z-index:9999;
+}
+
+.loader{
+  width:54px;
+  height:54px;
+  border:4px solid #202938;
+  border-top-color:#00e5a0;
+  border-radius:50%;
+  animation:spin 1s linear infinite;
+}
+
+.loadingText{
+  margin-top:18px;
+  color:#aab4c3;
+  font-size:14px;
+}
+
+@keyframes spin{
+  to{
+    transform:rotate(360deg);
+  }
+}
+
+#app{
+  max-width:520px;
+  margin:auto;
+  padding-bottom:90px;
+}
+
+.header{
+  padding:22px 18px 12px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+
+.logo{
+  font-size:22px;
+  font-weight:800;
+}
+
+.logo span{
+  color:#00e5a0;
+}
+
+.status{
+  font-size:12px;
+  color:#00e5a0;
+  background:#0c241d;
+  padding:7px 11px;
+  border-radius:20px;
+}
+
+.page{
+  display:none;
+}
+
+.section{
+  padding:12px 16px;
+}
+
+.sectionHead{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:14px;
+}
+
+.sectionHead h2{
+  font-size:19px;
+}
+
+.sectionHead span{
+  font-size:12px;
+  color:#7e8999;
+}
+
+/* BALANCE */
+
+.balanceBox{
+  margin:8px 16px 20px;
+  padding:22px;
+  border:1px solid #1b2736;
+  border-radius:20px;
+  background:linear-gradient(145deg,#101925,#0b111a);
+}
+
+.balanceLabel{
+  color:#8490a0;
+  font-size:13px;
+}
+
+.balance{
+  margin-top:8px;
+  font-size:34px;
+  font-weight:800;
+}
+
+.balance small{
+  font-size:15px;
+  color:#00e5a0;
+}
+
+.network{
+  margin-top:10px;
+  font-size:12px;
+  color:#8995a6;
+}
+
+.dot{
+  display:inline-block;
+  width:7px;
+  height:7px;
+  background:#00e5a0;
+  border-radius:50%;
+  margin-right:5px;
+}
+
+/* ADS */
+
+.adCard{
+  position:relative;
+  padding:18px;
+  margin-bottom:12px;
+  border:1px solid #202c3b;
+  border-radius:18px;
+  background:#0d151f;
+  cursor:pointer;
+  overflow:hidden;
+  transition:.15s;
+}
+
+.adCard:active{
+  transform:scale(.98);
+}
+
+.adTop{
+  display:flex;
+  align-items:center;
+  gap:13px;
+}
+
+.adIcon{
+  width:48px;
+  height:48px;
+  border-radius:14px;
+  background:#172333;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:23px;
+  flex-shrink:0;
+}
+
+.adInfo{
+  flex:1;
+}
+
+.adTitle{
+  font-weight:700;
+  font-size:15px;
+}
+
+.adSub{
+  color:#7f8b9c;
+  font-size:12px;
+  margin-top:5px;
+}
+
+.adReward{
+  color:#00e5a0;
+  font-size:13px;
+  font-weight:700;
+}
+
+.adButton{
+  width:100%;
+  margin-top:15px;
+  border:0;
+  padding:12px;
+  border-radius:12px;
+  background:#152231;
+  color:#fff;
+  font-weight:700;
+  font-size:13px;
+}
+
+.adCard.active{
+  border-color:#00e5a0;
+}
+
+.adCard.disabled{
+  opacity:.55;
+  pointer-events:none;
+}
+
+.adButton:disabled{
+  opacity:.5;
+}
+
+/* GIFT */
+
+.giftOverlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.82);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:5000;
+}
+
+.giftBox{
+  width:280px;
+  padding:28px 20px;
+  text-align:center;
+  background:#101923;
+  border:1px solid #263545;
+  border-radius:24px;
+}
+
+.giftEmoji{
+  font-size:70px;
+  animation:giftPop .8s ease;
+}
+
+.giftTitle{
+  margin-top:12px;
+  font-size:21px;
+  font-weight:800;
+}
+
+.giftSub{
+  color:#8995a6;
+  font-size:13px;
+  margin-top:7px;
+}
+
+.openGift{
+  width:100%;
+  margin-top:20px;
+  border:0;
+  padding:13px;
+  border-radius:13px;
+  background:#00e5a0;
+  color:#06120e;
+  font-weight:800;
+}
+
+@keyframes giftPop{
+  0%{
+    transform:scale(.4);
+    opacity:0;
+  }
+  70%{
+    transform:scale(1.12);
+  }
+  100%{
+    transform:scale(1);
+  }
+}
+
+/* TASK */
+
+.taskCard{
+  padding:15px;
+  border:1px solid #202c3b;
+  border-radius:16px;
+  background:#0d151f;
+  margin-bottom:10px;
+}
+
+.taskRow{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.taskIcon{
+  width:42px;
+  height:42px;
+  border-radius:12px;
+  background:#172333;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-shrink:0;
+}
+
+.taskInfo{
+  flex:1;
+}
+
+.taskTitle{
+  font-size:14px;
+  font-weight:700;
+}
+
+.taskReward{
+  font-size:12px;
+  color:#00e5a0;
+  margin-top:4px;
+}
+
+.taskBtn{
+  border:0;
+  background:#162535;
+  color:#fff;
+  padding:10px 14px;
+  border-radius:10px;
+  font-size:12px;
+  font-weight:700;
+}
+
+/* BOTTOM NAV */
+
+.bottomNav{
+  position:fixed;
+  left:50%;
+  bottom:10px;
+  transform:translateX(-50%);
+  width:calc(100% - 24px);
+  max-width:496px;
+  display:flex;
+  gap:7px;
+  padding:8px;
+  background:#101722;
+  border:1px solid #202b39;
+  border-radius:18px;
+  z-index:1000;
+}
+
+.navBtn{
+  flex:1;
+  border:0;
+  padding:11px 5px;
+  background:transparent;
+  color:#778393;
+  border-radius:12px;
+  font-size:12px;
+}
+
+.navBtn.active{
+  background:#172432;
+  color:#00e5a0;
+}
+
+/* TOAST */
+
+#toast{
+  position:fixed;
+  left:50%;
+  bottom:82px;
+  transform:translateX(-50%);
+  background:#151f2b;
+  border:1px solid #293747;
+  padding:11px 15px;
+  border-radius:12px;
+  font-size:13px;
+  display:none;
+  z-index:9000;
+  white-space:nowrap;
+}
+</style>
+</head>
+
+<body>
+
+<!-- LOADING -->
+
+<div id="loading">
+  <div class="loader"></div>
+  <div class="loadingText">
+    Loading Ads Orbit...
+  </div>
+</div>
+
+<div id="app">
+
+<header class="header">
+  <div class="logo">
+    ADS <span>ORBIT</span>
+  </div>
+
+  <div class="status">
+    ● ONLINE
+  </div>
+</header>
+
+
+<!-- HOME -->
+
+<section id="homePage" class="page">
+
+  <div class="balanceBox">
+
+    <div class="balanceLabel">
+      Total Earning
+    </div>
+
+    <div class="balance">
+      <span id="totalEarning">0.00</span>
+      <small>USDT</small>
+    </div>
+
+    <div class="network">
+      <span class="dot"></span>
+      BEP20 Network
+    </div>
+
+  </div>
+
+
+  <!-- ADS -->
+
+  <div class="section">
+
+    <div class="sectionHead">
+      <h2>📺 Ads Earning</h2>
+      <span id="adsCompleted">0 / 3</span>
+    </div>
+
+
+    <!-- AD 1 -->
+
+    <div
+      id="adCard1"
+      class="adCard"
+      onclick="watchAd(1)"
+    >
+
+      <div class="adTop">
+
+        <div class="adIcon">
+          🎬
+        </div>
+
+        <div class="adInfo">
+
+          <div class="adTitle">
+            Watch Advertisement #1
+          </div>
+
+          <div class="adSub">
+            Watch the ad to unlock your reward
+          </div>
+
+        </div>
+
+        <div class="adReward">
+          REWARD
+        </div>
+
+      </div>
+
+      <button
+        id="adButton1"
+        class="adButton"
+        type="button"
+      >
+        WATCH AD
+      </button>
+
+    </div>
+
+
+    <!-- AD 2 -->
+
+    <div
+      id="adCard2"
+      class="adCard"
+      onclick="watchAd(2)"
+    >
+
+      <div class="adTop">
+
+        <div class="adIcon">
+          🎁
+        </div>
+
+        <div class="adInfo">
+
+          <div class="adTitle">
+            Lucky Big Reward
+          </div>
+
+          <div class="adSub">
+            Complete the advertisement
+          </div>
+
+        </div>
+
+        <div class="adReward">
+          LUCKY
+        </div>
+
+      </div>
+
+      <button
+        id="adButton2"
+        class="adButton"
+        type="button"
+      >
+        WATCH AD
+      </button>
+
+    </div>
+
+
+    <!-- AD 3 -->
+
+    <div
+      id="adCard3"
+      class="adCard"
+      onclick="watchAd(3)"
+    >
+
+      <div class="adTop">
+
+        <div class="adIcon">
+          💎
+        </div>
+
+        <div class="adInfo">
+
+          <div class="adTitle">
+            Watch Advertisement #3
+          </div>
+
+          <div class="adSub">
+            One more ad to earn
+          </div>
+
+        </div>
+
+        <div class="adReward">
+          REWARD
+        </div>
+
+      </div>
+
+      <button
+        id="adButton3"
+        class="adButton"
+        type="button"
+      >
+        WATCH AD
+      </button>
+
+    </div>
+
+
+    <div
+      id="resetStatus"
+      style="text-align:center;color:#7f8b9c;font-size:12px;margin:15px 0"
+    >
+      Daily limit: 3 ads
+    </div>
+
+    <div
+      id="resetTimer"
+      style="text-align:center;color:#00e5a0;font-size:13px"
+    ></div>
+
+  </div>
+
+
+  <!-- WORK TASK -->
+
+  <div class="section">
+
+    <div class="sectionHead">
+      <h2>🚀 Work Task</h2>
+      <span>+0.10 USDT</span>
+    </div>
+
+
+    <div class="taskCard">
+
+      <div class="taskRow">
+
+        <div class="taskIcon">
+          ✈️
+        </div>
+
+        <div class="taskInfo">
+
+          <div class="taskTitle">
+            Join Telegram Channel
+          </div>
+
+          <div class="taskReward">
+            +0.10 USDT
+          </div>
+
+        </div>
+
+        <button
+          id="taskButton1"
+          class="taskBtn"
+          onclick="startTask(1)"
+        >
+          OPEN
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <div class="taskCard">
+
+      <div class="taskRow">
+
+        <div class="taskIcon">
+          📢
+        </div>
+
+        <div class="taskInfo">
+
+          <div class="taskTitle">
+            Join Official Channel
+          </div>
+
+          <div class="taskReward">
+            +0.10 USDT
+          </div>
+
+        </div>
+
+        <button
+          id="taskButton2"
+          class="taskBtn"
+          onclick="startTask(2)"
+        >
+          OPEN
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <div class="taskCard">
+
+      <div class="taskRow">
+
+        <div class="taskIcon">
+          ⭐
+        </div>
+
+        <div class="taskInfo">
+
+          <div class="taskTitle">
+            Join Airdrop Channel
+          </div>
+
+          <div class="taskReward">
+            +0.10 USDT
+          </div>
+
+        </div>
+
+        <button
+          id="taskButton3"
+          class="taskBtn"
+          onclick="startTask(3)"
+        >
+          OPEN
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- WALLET -->
+
+<section id="walletPage" class="page">
+</section>
+
+
+<!-- SUPPORT -->
+
+<section id="supportPage" class="page">
+</section>
+
+
+<!-- WITHDRAW -->
+
+<section id="withdrawPage" class="page">
+</section>
+
+
+<!-- DEPOSIT -->
+
+<section id="depositPage" class="page">
+</section>
+
+</div>
+
+
+<!-- GIFT POPUP -->
+
+<div id="giftOverlay" class="giftOverlay">
+
+  <div class="giftBox">
+
+    <div class="giftEmoji">
+      🎁
+    </div>
+
+    <div class="giftTitle">
+      Reward Unlocked!
+    </div>
+
+    <div class="giftSub">
+      Your advertisement has been completed.
+    </div>
+
+    <button
+      class="openGift"
+      onclick="claimGift()"
+    >
+      OPEN GIFT
+    </button>
+
+  </div>
+
+</div>
+
+
+<!-- TOAST -->
+
+<div id="toast"></div>
+
+
+<!-- BOTTOM NAV -->
+
+<nav class="bottomNav">
+
+  <button
+    id="navHome"
+    class="navBtn active"
+    onclick="showPage('homePage')"
+  >
+    🏠<br>
+    Home
+  </button>
+
+  <button
+    id="navWallet"
+    class="navBtn"
+    onclick="showPage('walletPage')"
+  >
+    💼<br>
+    Wallet
+  </button>
+
+  <button
+    id="navSupport"
+    class="navBtn"
+    onclick="showPage('supportPage')"
+  >
+    💬<br>
+    Support
+  </button>
+
+</nav>
+
+
+<script>
+
+/* TELEGRAM */
+
+const tg=window.Telegram&&window.Telegram.WebApp;
+
+if(tg){
+  tg.ready();
+  tg.expand();
+}
+
+
+/* APP DATA */
+
+const STORAGE_KEY="adsOrbitData";
+
+const DEPOSIT_ADDRESS=
+"0xFFe3B9bAFF7b44a8DEeA35205EeF2414a414892e";
+
+const TASK_LINKS=[
+  "https://t.me/airdropinspector",
+  "https://t.me/trust_announcements",
+  "https://t.me/mosguru"
+];
+
+
+let adLoading=false;
+let currentAd=0;
+
+
+/* DEFAULT DATA */
+
+let data={
+  balance:0,
+  today:0,
+  ads:0,
+  tasks:[false,false,false],
+  date:new Date().toDateString(),
+  first:new Date().toDateString(),
+  cooldown:0
+};
+
+
+/* LOAD SAVED DATA */
+
+try{
+
+  const saved=localStorage.getItem(STORAGE_KEY);
+
+  if(saved){
+    data=Object.assign(
+      data,
+      JSON.parse(saved)
+    );
+  }
+
+}catch(error){}
+
+
+/* SAVE */
+
+function save(){
+
+  try{
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify(data)
+    );
+  }catch(error){}
+
+}
+
+
+/* DATE RESET */
+
+function resetCheck(){
+
+  const now=new Date();
+
+  if(data.cooldown>0){
+    return;
+  }
+
+  if(data.date!==now.toDateString()){
+
+    data.date=now.toDateString();
+    data.today=0;
+    data.ads=0;
+
+    save();
+
+  }
+
+}
+
+
+/* AD REWARD */
+
+function randomReward(){
+
+  const min=Number(arguments[0]);
+  const max=Number(arguments[1]);
+
+  return Number(
+    (
+      Math.random()*(max-min)+min
+    ).toFixed(2)
+  );
+
+}
+
+
+/* WATCH AD */
+
+async function watchAd(){
+
+  const n=Number(arguments[0]);
+
+  if(adLoading){
+    return;
+  }
+
+  resetCheck();
+
+  if(data.cooldown>0){
+
+    toast(
+      "Daily ads are locked. Please wait.",
+      "⏳"
+    );
+
+    return;
+  }
+
+  if(data.ads>=3){
+
+    startCooldown();
+
+    return;
+  }
+
+
+  const button=
+    document.getElementById(
+      "adButton"+n
+    );
+
+  const card=
+    document.getElementById(
+      "adCard"+n
+    );
+
+  if(!button||!card){
+    return;
+  }
+
+
+  adLoading=true;
+  currentAd=n;
+
+  button.disabled=true;
+  button.textContent="LOADING...";
+  card.classList.add("active");
+
+
+  try{
+
+    if(
+      typeof window.showAdexora!=="function"
+    ){
+
+      throw new Error(
+        "AdExora not loaded"
+      );
+
+    }
+
+
+    await window.showAdexora();
+
+
+    /* AD COMPLETED */
+
+    button.textContent="COMPLETED ✓";
+
+    openGift(n);
+
+
+  }catch(error){
+
+    button.disabled=false;
+    button.textContent="WATCH AD";
+    card.classList.remove("active");
+
+    toast(
+      "Ad is not available right now. Try again.",
+      "⚠️"
+    );
+
+  }finally{
+
+    adLoading=false;
+
+  }
+
+}
+
+
+/* OPEN GIFT */
+
+function openGift(){
+
+  document.getElementById(
+    "giftOverlay"
+  ).style.display="flex";
+
+}
+
+
+/* CLAIM GIFT */
+
+function claimGift(){
+
+  let reward=0;
+
+
+  if(
+    data.date===data.first
+  ){
+
+    if(currentAd===1){
+
+      reward=randomReward(
+        0.10,
+        0.20
+      );
+
+    }else if(currentAd===2){
+
+      reward=randomReward(
+        40,
+        80
+      );
+
+    }else{
+
+      reward=randomReward(
+        0.10,
+        0.30
+      );
+
+    }
+
+  }else{
+
+    reward=randomReward(
+      0.10,
+      0.20
+    );
+
+  }
+
+
+  data.balance=
+    Number(
+      (
+        data.balance+reward
+      ).toFixed(2)
+    );
+
+
+  data.today=
+    Number(
+      (
+        data.today+reward
+      ).toFixed(2)
+    );
+
+
+  data.ads++;
+
+  save();
+
+
+  document.getElementById(
+    "giftOverlay"
+  ).style.display="none";
+
+
+  toast(
+    "+"+reward.toFixed(2)+" USDT added!",
+    "🎉"
+  );
+
+
+  update();
+
+  updateAds();
+
+
+  if(data.ads>=3){
+
+    setTimeout(
+      startCooldown,
+      800
+    );
+
+  }
+
+}
+
+
+/* COOLDOWN */
+
+function startCooldown(){
+
+  if(data.cooldown<=0){
+
+    data.cooldown=
+      Date.now()+
+      24*60*60*1000;
+
+    save();
+
+  }
+
+  updateAds();
+
+}
+
+
+/* UPDATE BALANCE */
+
+function update(){
+
+  document.getElementById(
+    "totalEarning"
+  ).textContent=
+    Number(data.balance).toFixed(2);
+
+}
+
+
+/* UPDATE ADS */
+
+function updateAds(){
+
+  if(adLoading){
+    return;
+  }
+
+  const count=
+    document.getElementById(
+      "adsCompleted"
+    );
+
+  if(count){
+
+    count.textContent=
+      data.ads+" / 3";
+
+  }
+
+
+  for(
+    let i=1;
+    i<=3;
+    i++
+  ){
+
+    const button=
+      document.getElementById(
+        "adButton"+i
+      );
+
+    const card=
+      document.getElementById(
+        "adCard"+i
+      );
+
+    if(!button||!card){
+      continue;
+    }
+
+
+    if(data.cooldown>0){
+
+      button.disabled=true;
+      button.textContent="LOCKED";
+      card.classList.add("disabled");
+
+    }else if(data.ads>=3){
+
+      button.disabled=true;
+      button.textContent="LOCKED";
+      card.classList.add("disabled");
+
+    }else if(i<=data.ads){
+
+      button.disabled=true;
+      button.textContent="COMPLETED ✓";
+      card.classList.add("disabled");
+
+    }else{
+
+      button.disabled=false;
+      button.textContent="WATCH AD";
+      card.classList.remove("disabled");
+
+    }
+
+  }
+
+}
+
+
+/* TASK */
+
+function startTask(){
+
+  const n=Number(arguments[0]);
+
+  if(data.tasks[n-1]){
+    return;
+  }
+
+
+  const url=
+    TASK_LINKS[n-1];
+
+  if(url){
+
+    if(
+      tg&&
+      typeof tg.openTelegramLink==="function"
+    ){
+
+      tg.openTelegramLink(url);
+
+    }else{
+
+      window.open(
+        url,
+        "_blank"
+      );
+
+    }
+
+  }
+
+
+  const button=
+    document.getElementById(
+      "taskButton"+n
+    );
+
+  if(button){
+
+    button.textContent="CLAIM";
+    button.dataset.ready="1";
+
+  }
+
+
+  setTimeout(
+    function(){
+
+      if(button&&button.dataset.ready==="1"){
+
+        button.textContent="CLAIM";
+
+      }
+
+    },
+    3000
+  );
+
+}
+
+
+/* CLAIM TASK */
+
+function claimTask(){
+
+  const n=Number(arguments[0]);
+
+  const button=
+    document.getElementById(
+      "taskButton"+n
+    );
+
+  if(
+    !button||
+    button.dataset.ready!=="1"
+  ){
+
+    return;
+
+  }
+
+
+  if(data.tasks[n-1]){
+
+    toast(
+      "Task already claimed.",
+      "ℹ️"
+    );
+
+    return;
+
+  }
+
+
+  data.tasks[n-1]=true;
+
+  data.balance=
+    Number(
+      (
+        data.balance+0.10
+      ).toFixed(2)
+    );
+
+  data.today=
+    Number(
+      (
+        data.today+0.10
+      ).toFixed(2)
+    );
+
+
+  button.textContent="CLAIMED ✓";
+  button.disabled=true;
+
+  save();
+  update();
+
+  toast(
+    "+0.10 USDT added!",
+    "🎉"
+  );
+
+}
+
+
+/* PAGE NAVIGATION */
+
+function showPage(){
+
+  const id=arguments[0];
+
+  const pages=
+    document.querySelectorAll(
+      ".page"
+    );
+
+  pages.forEach(
+    function(page){
+      page.style.display="none";
+    }
+  );
+
+
+  const target=
+    document.getElementById(id);
+
+  if(target){
+
+    target.style.display="block";
+
+  }
+
+
+  document.querySelectorAll(
+    ".navBtn"
+  ).forEach(
+    function(btn){
+      btn.classList.remove("active");
+    }
+  );
+
+
+  if(id==="homePage"){
+
+    document.getElementById(
+      "navHome"
+    ).classList.add("active");
+
+  }
+
+  if(id==="walletPage"){
+
+    document.getElementById(
+      "navWallet"
+    ).classList.add("active");
+
+  }
+
+  if(id==="supportPage"){
+
+    document.getElementById(
+      "navSupport"
+    ).classList.add("active");
+
+  }
+
+}
+
+
+/* TOAST */
+
+function toast(){
+
+  const text=arguments[0];
+  const icon=arguments[1]||"";
+
+  const box=
+    document.getElementById(
+      "toast"
+    );
+
+  box.textContent=
+    icon+" "+text;
+
+  box.style.display="block";
+
+  setTimeout(
+    function(){
+      box.style.display="none";
+    },
+    2500
+  );
+
+}
+
+
+/* START */
+
+function init(){
+
+  resetCheck();
+  update();
+  updateAds();
+
+  showPage("homePage");
+
+}
+
+
+/* 5 SECOND LOADING */
+
+setTimeout(
+  function(){
+
+    document.getElementById(
+      "loading"
+    ).style.display="none";
+
+    init();
+
+  },
+  5000
+);
+
+
+/* TIMER */
+
+setInterval(
+  function(){
+
+    resetCheck();
+    update();
+    updateAds();
+
+  },
+  1000
+);
+  /* WALLET PAGE */
+
+document.getElementById("walletPage").innerHTML=`
+
+<div class="section">
+
+  <div class="sectionHead">
+    <h2>💼 Wallet</h2>
+    <span>Assets</span>
+  </div>
+
+  <div class="balanceBox">
+
+    <div class="balanceLabel">
+      Available Balance
+    </div>
+
+    <div class="balance">
+      <span id="walletBalance">0.00</span>
+      <small>USDT</small>
+    </div>
+
+    <div class="network">
+      <span class="dot"></span>
+      BEP20 Network
+    </div>
+
+  </div>
+
+
+  <div class="coinCards">
+
+    <div class="coinCard">
+      <div class="coinIcon">₮</div>
+
+      <div class="coinName">
+        Tether USD
+      </div>
+
+      <div class="coinBalance">
+        <span id="walletUsdt">0.00</span>
+        <small>USDT</small>
+      </div>
+    </div>
+
+
+    <div class="coinCard">
+      <div class="coinIcon">BNB</div>
+
+      <div class="coinName">
+        BNB Smart Chain
+      </div>
+
+      <div class="coinBalance">
+        <span id="walletBnb">0.00</span>
+        <small>BNB</small>
+      </div>
+    </div>
+
+  </div>
+
+
+  <div class="walletActions">
+
+    <button
+      class="walletBtn primary"
+      onclick="openWithdrawPage()"
+    >
+      ↗ WITHDRAW
+    </button>
+
+    <button
+      class="walletBtn"
+      onclick="openDepositPage()"
+    >
+      ↓ DEPOSIT
+    </button>
+
+  </div>
+
+
+  <div class="ruleBox">
+
+    <h3>⚡ Wallet Rules</h3>
+
+    <div class="rule">
+      <b>•</b>
+      Minimum withdrawal is 1 USDT.
+    </div>
+
+    <div class="rule">
+      <b>•</b>
+      Withdrawals use the BEP20 network.
+    </div>
+
+    <div class="rule">
+      <b>•</b>
+      0.002 BNB is required for withdrawal fee.
+    </div>
+
+    <div class="rule">
+      <b>•</b>
+      Always check your wallet address carefully.
+    </div>
+
+  </div>
+
+</div>
+`;
+
+
+/* SUPPORT PAGE */
+
+document.getElementById("supportPage").innerHTML=`
+
+<div class="section">
+
+  <div class="sectionHead">
+    <h2>💬 Support</h2>
+    <span>Help Center</span>
+  </div>
+
+  <div class="supportBox">
+
+    <div class="aoLogo">
+      AO
+    </div>
+
+    <h2>
+      Ads Orbit Support
+    </h2>
+
+    <p>
+      Need help with your account,
+      rewards or wallet?
+    </p>
+
+    <p>
+      Contact our official support team
+      on Telegram.
+    </p>
+
+    <button
+      class="mainBtn"
+      onclick="contactSupport()"
+    >
+      CONTACT NOW
+    </button>
+
+  </div>
+
+</div>
+`;
+
+
+/* WITHDRAW PAGE */
+
+document.getElementById("withdrawPage").innerHTML=`
+
+<div class="fullPage">
+
+  <div class="pageHeader">
+
+    <button
+      class="backBtn"
+      onclick="closeFullPage()"
+    >
+      ←
+    </button>
+
+    <div>
+      <h2>Withdraw</h2>
+      <span>USDT BEP20</span>
+    </div>
+
+  </div>
+
+
+  <div class="formCard">
+
+    <label>
+      BEP20 Wallet Address
+    </label>
+
+    <input
+      id="withdrawAddress"
+      class="formInput"
+      type="text"
+      placeholder="Enter BEP20 address"
+      autocomplete="off"
+    />
+
+
+    <label>
+      Amount
+    </label>
+
+    <div class="amountBox">
+
+      <input
+        id="withdrawAmount"
+        class="formInput"
+        type="number"
+        step="0.01"
+        min="1"
+        placeholder="Minimum 1 USDT"
+      />
+
+      <span>USDT</span>
+
+    </div>
+
+
+    <div class="infoBox">
+      Available:
+      <b>
+        <span id="withdrawAvailable">0.00</span>
+        USDT
+      </b>
+    </div>
+
+
+    <button
+      class="mainBtn"
+      onclick="submitWithdraw()"
+    >
+      CONFIRM WITHDRAWAL
+    </button>
+
+
+    <div
+      id="withdrawMessage"
+      class="withdrawWarning"
+    ></div>
+
+  </div>
+
+
+  <div class="ruleBox">
+
+    <h3>⚡ Withdrawal Rules</h3>
+
+    <div class="rule">
+      <b>•</b>
+      Minimum withdrawal: 1 USDT.
+    </div>
+
+    <div class="rule">
+      <b>•</b>
+      Network: BEP20 only.
+    </div>
+
+    <div class="rule">
+      <b>•</b>
+      Withdrawal fee: 0.002 BNB.
+    </div>
+
+    <div class="rule">
+      <b>•</b>
+      Incorrect wallet address may cause permanent loss.
+    </div>
+
+    <div class="rule">
+      <b>•</b>
+      This prototype does not perform real blockchain withdrawals.
+    </div>
+
+  </div>
+
+</div>
+`;
+
+
+/* DEPOSIT PAGE */
+
+document.getElementById("depositPage").innerHTML=`
+
+<div class="fullPage">
+
+  <div class="pageHeader">
+
+    <button
+      class="backBtn"
+      onclick="closeFullPage()"
+    >
+      ←
+    </button>
+
+    <div>
+      <h2>Deposit</h2>
+      <span>USDT BEP20</span>
+    </div>
+
+  </div>
+
+
+  <div class="formCard">
+
+    <div class="depositCoin">
+      <div class="coinIcon">₮</div>
+
+      <div>
+        <b>USDT</b>
+        <small>BEP20 Network</small>
+      </div>
+    </div>
+
+
+    <label>
+      Deposit Address
+    </label>
+
+    <div class="addressBox">
+
+      <div id="depositAddress">
+        0xFFe3B9bAFF7b44a8DEeA35205EeF2414a414892e
+      </div>
+
+      <button
+        class="copyBtn"
+        onclick="copyDepositAddress()"
+      >
+        COPY
+      </button>
+
+    </div>
+
+
+    <label>
+      Memo
+    </label>
+
+    <div class="addressBox">
+
+      <div id="depositMemo">
+        XXXXX
+      </div>
+
+      <button
+        class="copyBtn"
+        onclick="copyDepositMemo()"
+      >
+        COPY
+      </button>
+
+    </div>
+
+
+    <div class="infoBox">
+      Send USDT using
+      <b>BEP20 Network</b>
+      only.
+    </div>
+
+  </div>
+
+
+  <div class="ruleBox">
+
+    <h3>⚡ Deposit Rules</h3>
+
+    <div class="rule">
+      <b>•</b>
+      Only send USDT through BEP20.
+    </div>
+
+    <div class="rule">
+      <b>•</b>
+      Always verify the deposit address before sending.
+    </div>
+
+    <div class="rule">
+      <b>•</b>
+      Memo is required where applicable.
+    </div>
+
+    <div class="rule">
+      <b>•</b>
+      Deposits are not automatically verified in this prototype.
+    </div>
+
+  </div>
+
+</div>
+`;
+
+
+/* EXTRA WALLET CSS */
+
+const extraStyle=document.createElement("style");
+
+extraStyle.textContent=`
+
+.coinCards{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin:14px 0;
+}
+
+.coinCard{
+  padding:16px;
+  border:1px solid #202c3b;
+  border-radius:17px;
+  background:#0d151f;
+}
+
+.coinIcon{
+  width:42px;
+  height:42px;
+  border-radius:12px;
+  background:#172333;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:18px;
+  font-weight:800;
+  margin-bottom:10px;
+}
+
+.coinName{
+  color:#8793a3;
+  font-size:12px;
+}
+
+.coinBalance{
+  margin-top:5px;
+  font-size:21px;
+  font-weight:800;
+}
+
+.coinBalance small{
+  color:#00e5a0;
+  font-size:11px;
+}
+
+.walletActions{
+  display:flex;
+  gap:10px;
+  margin-top:14px;
+}
+
+.walletBtn{
+  flex:1;
+  border:1px solid #263545;
+  background:#111c28;
+  color:#fff;
+  padding:13px 8px;
+  border-radius:13px;
+  font-weight:800;
+  font-size:12px;
+}
+
+.walletBtn.primary{
+  background:#00e5a0;
+  color:#06120e;
+  border-color:#00e5a0;
+}
+
+.ruleBox{
+  margin-top:15px;
+  padding:17px;
+  border:1px solid #202c3b;
+  border-radius:17px;
+  background:#0d151f;
+}
+
+.ruleBox h3{
+  font-size:15px;
+  margin-bottom:12px;
+}
+
+.rule{
+  color:#8995a6;
+  font-size:12px;
+  line-height:1.5;
+  margin:9px 0;
+}
+
+.rule b{
+  color:#00e5a0;
+  margin-right:7px;
+}
+
+.supportBox{
+  margin-top:15px;
+  padding:28px 20px;
+  text-align:center;
+  border:1px solid #202c3b;
+  border-radius:20px;
+  background:#0d151f;
+}
+
+.aoLogo{
+  width:65px;
+  height:65px;
+  margin:0 auto 15px;
+  border-radius:18px;
+  background:#00e5a0;
+  color:#06120e;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:22px;
+  font-weight:900;
+}
+
+.supportBox p{
+  color:#8995a6;
+  font-size:13px;
+  line-height:1.5;
+  margin-top:8px;
+}
+
+.fullPage{
+  min-height:calc(100vh - 70px);
+  padding:12px 16px 100px;
+}
+
+.pageHeader{
+  display:flex;
+  align-items:center;
+  gap:13px;
+  margin-bottom:22px;
+}
+
+.pageHeader h2{
+  font-size:20px;
+}
+
+.pageHeader span{
+  display:block;
+  color:#7e8999;
+  font-size:12px;
+  margin-top:3px;
+}
+
+.backBtn{
+  width:42px;
+  height:42px;
+  border:1px solid #263545;
+  background:#101a25;
+  color:#fff;
+  border-radius:12px;
+  font-size:20px;
+}
+
+.formCard{
+  padding:18px;
+  border:1px solid #202c3b;
+  border-radius:19px;
+  background:#0d151f;
+}
+
+.formCard label{
+  display:block;
+  color:#9ba5b3;
+  font-size:12px;
+  margin:14px 0 7px;
+}
+
+.formInput{
+  width:100%;
+  border:1px solid #263545;
+  outline:none;
+  background:#09111a;
+  color:#fff;
+  border-radius:12px;
+  padding:13px;
+  font-size:13px;
+}
+
+.formInput:focus{
+  border-color:#00e5a0;
+}
+
+.amountBox{
+  position:relative;
+}
+
+.amountBox span{
+  position:absolute;
+  right:13px;
+  top:14px;
+  color:#00e5a0;
+  font-size:12px;
+  font-weight:700;
+}
+
+.infoBox{
+  margin-top:12px;
+  padding:12px;
+  border-radius:12px;
+  background:#101d29;
+  color:#8995a6;
+  font-size:12px;
+}
+
+.infoBox b{
+  color:#fff;
+}
+
+.mainBtn{
+  width:100%;
+  margin-top:16px;
+  border:0;
+  padding:14px;
+  border-radius:13px;
+  background:#00e5a0;
+  color:#06120e;
+  font-weight:900;
+  font-size:13px;
+}
+
+.withdrawWarning{
+  margin-top:12px;
+  font-size:12px;
+  text-align:center;
+  color:#ffb36b;
+}
+
+.addressBox{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:11px;
+  border:1px solid #263545;
+  border-radius:12px;
+  background:#09111a;
+}
+
+.addressBox div{
+  flex:1;
+  min-width:0;
+  overflow:hidden;
+  word-break:break-all;
+  color:#c7d0dc;
+  font-size:11px;
+  line-height:1.5;
+}
+
+.copyBtn{
+  border:0;
+  background:#172535;
+  color:#00e5a0;
+  padding:9px 10px;
+  border-radius:9px;
+  font-size:10px;
+  font-weight:800;
+}
+
+.depositCoin{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-bottom:8px;
+}
+
+.depositCoin .coinIcon{
+  margin:0;
+}
+
+.depositCoin small{
+  display:block;
+  color:#7f8b9c;
+  font-size:11px;
+  margin-top:3px;
+}
+
+`;
+
+document.head.appendChild(extraStyle);
+
+
+/* UPDATE WALLET */
+
+function updateWallet(){
+
+  const balance=
+    Number(data.balance).toFixed(2);
+
+  const a=
+    document.getElementById("walletBalance");
+
+  const b=
+    document.getElementById("walletUsdt");
+
+  const c=
+    document.getElementById("withdrawAvailable");
+
+  if(a){
+    a.textContent=balance;
+  }
+
+  if(b){
+    b.textContent=balance;
+  }
+
+  if(c){
+    c.textContent=balance;
+  }
+
+}
+
+
+/* WITHDRAW PAGE */
+
+function openWithdrawPage(){
+
+  showFullPage("withdrawPage");
+
+  updateWallet();
+
+}
+
+
+/* DEPOSIT PAGE */
+
+function openDepositPage(){
+
+  showFullPage("depositPage");
+
+  getMemo();
+
+}
+
+
+/* SHOW FULL PAGE */
+
+function showFullPage(){
+
+  const id=arguments[0];
+
+  document.querySelectorAll(".page").forEach(
+    function(page){
+      page.style.display="none";
+    }
+  );
+
+  document.getElementById(id).style.display="block";
+
+  document.querySelectorAll(".bottomNav").forEach(
+    function(nav){
+      nav.style.display="none";
+    }
+  );
+
+}
+
+
+/* CLOSE FULL PAGE */
+
+function closeFullPage(){
+
+  showPage("walletPage");
+
+  document.querySelectorAll(".bottomNav").forEach(
+    function(nav){
+      nav.style.display="flex";
+    }
+  );
+
+}
+
+
+/* BEP20 VALIDATION */
+
+function validBep20(){
+
+  const address=
+    document.getElementById(
+      "withdrawAddress"
+    ).value.trim();
+
+  return /^0x[a-fA-F0-9]{40}$/.test(address);
+
+}
+
+
+/* WITHDRAW */
+
+function submitWithdraw(){
+
+  const address=
+    document.getElementById(
+      "withdrawAddress"
+    ).value.trim();
+
+  const amount=
+    Number(
+      document.getElementById(
+        "withdrawAmount"
+      ).value
+    );
+
+  const message=
+    document.getElementById(
+      "withdrawMessage"
+    );
+
+
+  if(!validBep20()){
+
+    message.textContent=
+      "Wrong address";
+
+    return;
+
+  }
+
+
+  if(
+    !Number.isFinite(amount)||
+    amount<1
+  ){
+
+    message.textContent=
+      "Minimum withdrawal is 1 USDT.";
+
+    return;
+
+  }
+
+
+  if(amount>Number(data.balance)){
+
+    message.textContent=
+      "Insufficient USDT balance.";
+
+    return;
+
+  }
+
+
+  if(0<=0){
+
+    message.textContent=
+      "Withdrawal fee requires 0.002 BNB. Your BNB balance is 0.00.";
+
+    return;
+
+  }
+
+}
+
+
+/* SUPPORT */
+
+function contactSupport(){
+
+  const url=
+    "https://t.me/ads_subscription";
+
+  if(
+    tg&&
+    typeof tg.openTelegramLink==="function"
+  ){
+
+    tg.openTelegramLink(url);
+
+  }else{
+
+    window.open(
+      url,
+      "_blank"
+    );
+
+  }
+
+}
+
+
+/* COPY */
+
+function copyText(){
+
+  const text=
+    String(arguments[0]);
+
+  if(
+    navigator.clipboard&&
+    navigator.clipboard.writeText
+  ){
+
+    navigator.clipboard.writeText(text)
+      .then(
+        function(){
+          toast("Copied successfully!","✅");
+        }
+      )
+      .catch(
+        function(){
+          toast("Copy failed.","❌");
+        }
+      );
+
+  }else{
+
+    toast("Copy not supported.","⚠️");
+
+  }
+
+}
+
+
+/* COPY DEPOSIT ADDRESS */
+
+function copyDepositAddress(){
+
+  copyText(
+    DEPOSIT_ADDRESS
+  );
+
+  toast(
+    "Address copied",
+    "✅"
+  );
+
+}
+
+
+/* MEMO */
+
+function getMemo(){
+
+  let memo=
+    localStorage.getItem(
+      "adsOrbitMemo"
+    );
+
+  if(!memo){
+
+    const chars=
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+    memo="";
+
+    for(
+      let i=0;
+      i<5;
+      i++
+    ){
+
+      memo+=
+        chars.charAt(
+          Math.floor(
+            Math.random()*chars.length
+          )
+        );
+
+    }
+
+    localStorage.setItem(
+      "adsOrbitMemo",
+      memo
+    );
+
+  }
+
+
+  const box=
+    document.getElementById(
+      "depositMemo"
+    );
+
+  if(box){
+    box.textContent=memo;
+  }
+
+  return memo;
+
+}
+
+
+/* COPY MEMO */
+
+function copyDepositMemo(){
+
+  const memo=getMemo();
+
+  copyText(memo);
+
+  toast(
+    "Memo copied",
+    "✅"
+  );
+
+}
+
+
+/* INITIAL WALLET */
+
+updateWallet();
+  function timer(){
+
+  const timerBox=
+    document.getElementById("resetTimer");
+
+  const statusBox=
+    document.getElementById("resetStatus");
+
+  if(!timerBox||!statusBox){
+    return;
+  }
+
+
+  if(data.cooldown>0){
+
+    const remaining=
+      data.cooldown-Date.now();
+
+
+    if(remaining<=0){
+
+      data.cooldown=0;
+      data.ads=0;
+      data.today=0;
+      data.date=new Date().toDateString();
+
+      save();
+
+      timerBox.textContent="";
+      statusBox.textContent=
+        "Daily limit reset! You can watch 3 ads again.";
+
+      updateAds();
+
+      return;
+    }
+
+
+    const totalSeconds=
+      Math.floor(remaining/1000);
+
+    const hours=
+      Math.floor(totalSeconds/3600);
+
+    const minutes=
+      Math.floor(
+        (totalSeconds%3600)/60
+      );
+
+    const seconds=
+      totalSeconds%60;
+
+
+    timerBox.textContent=
+      "Next ads available in "+
+      String(hours).padStart(2,"0")+":"+
+      String(minutes).padStart(2,"0")+":"+
+      String(seconds).padStart(2,"0");
+
+    statusBox.textContent=
+      "Daily limit reached • 3 / 3 ads";
+
+  }else{
+
+    timerBox.textContent="";
+
+    if(data.ads>=3){
+
+      statusBox.textContent=
+        "Daily limit reached";
+
+    }else{
+
+      statusBox.textContent=
+        "Daily limit: 3 ads";
+
+    }
+
+  }
+
+}
+
+
+/* TASK BUTTON FIX */
+
+function startTask(){
+
+  const n=
+    Number(arguments[0]);
+
+  const button=
+    document.getElementById(
+      "taskButton"+n
+    );
+
+  if(!button){
+    return;
+  }
+
+
+  /*
+    If button is already CLAIM,
+    claim the task instead of opening Telegram.
+  */
+
+  if(
+    button.textContent.trim()==="CLAIM"
+  ){
+
+    claimTask(n);
+
+    return;
+
+  }
+
+
+  if(data.tasks[n-1]){
+
+    button.textContent=
+      "CLAIMED ✓";
+
+    button.disabled=true;
+
+    return;
+
+  }
+
+
+  const url=
+    TASK_LINKS[n-1];
+
+
+  if(url){
+
+    if(
+      tg&&
+      typeof tg.openTelegramLink==="function"
+    ){
+
+      tg.openTelegramLink(url);
+
+    }else{
+
+      window.open(
+        url,
+        "_blank"
+      );
+
+    }
+
+  }
+
+
+  button.textContent="CLAIM";
+
+
+  /*
+    User must wait 3 seconds
+    before claiming.
+  */
+
+  button.dataset.ready="0";
+
+
+  setTimeout(
+    function(){
+
+      if(
+        button &&
+        !data.tasks[n-1]
+      ){
+
+        button.dataset.ready="1";
+        button.textContent="CLAIM";
+
+      }
+
+    },
+    3000
+  );
+
+}
+
+
+/* CLAIM TASK */
+
+function claimTask(){
+
+  const n=
+    Number(arguments[0]);
+
+  const button=
+    document.getElementById(
+      "taskButton"+n
+    );
+
+
+  if(!button){
+    return;
+  }
+
+
+  if(
+    button.dataset.ready!=="1"
+  ){
+
+    toast(
+      "Please wait 3 seconds.",
+      "⏳"
+    );
+
+    return;
+
+  }
+
+
+  if(data.tasks[n-1]){
+
+    toast(
+      "Task already claimed.",
+      "ℹ️"
+    );
+
+    return;
+
+  }
+
+
+  data.tasks[n-1]=true;
+
+
+  data.balance=
+    Number(
+      (
+        Number(data.balance)+0.10
+      ).toFixed(2)
+    );
+
+
+  data.today=
+    Number(
+      (
+        Number(data.today)+0.10
+      ).toFixed(2)
+    );
+
+
+  button.textContent=
+    "CLAIMED ✓";
+
+  button.disabled=true;
+  button.dataset.ready="0";
+
+
+  save();
+
+  update();
+  updateWallet();
+
+
+  toast(
+    "+0.10 USDT added!",
+    "🎉"
+  );
+
+}
+
+
+/* UPDATE ALL BALANCES */
+
+function update(){
+
+  const total=
+    Number(data.balance).toFixed(2);
+
+
+  const today=
+    Number(data.today).toFixed(2);
+
+
+  const totalBox=
+    document.getElementById(
+      "totalEarning"
+    );
+
+
+  if(totalBox){
+    totalBox.textContent=total;
+  }
+
+
+  const todayBox=
+    document.getElementById(
+      "todayEarning"
+    );
+
+
+  if(todayBox){
+    todayBox.textContent=today;
+  }
+
+
+  updateWallet();
+
+}
+
+
+/* UPDATE TASKS */
+
+function updateTasks(){
+
+  for(
+    let i=1;
+    i<=3;
+    i++
+  ){
+
+    const button=
+      document.getElementById(
+        "taskButton"+i
+      );
+
+
+    if(!button){
+      continue;
+    }
+
+
+    if(data.tasks[i-1]){
+
+      button.textContent=
+        "CLAIMED ✓";
+
+      button.disabled=true;
+
+      button.dataset.ready="0";
+
+    }
+
+  }
+
+}
+
+
+/* CHECK DAILY DATE */
+
+function dailyCheck(){
+
+  const today=
+    new Date().toDateString();
+
+
+  /*
+    Do not reset an active
+    24-hour cooldown.
+  */
+
+  if(data.cooldown>0){
+    return;
+  }
+
+
+  if(data.date!==today){
+
+    data.date=today;
+    data.today=0;
+    data.ads=0;
+
+    save();
+
+    update();
+    updateAds();
+
+  }
+
+}
+
+
+/* APP START */
+
+function startApp(){
+
+  dailyCheck();
+
+  update();
+
+  updateAds();
+
+  updateTasks();
+
+  getMemo();
+
+  showPage("homePage");
+
+}
+
+
+/*
+  The loading screen is intentionally
+  kept for exactly 5 seconds.
+*/
+
+setTimeout(
+  function(){
+
+    const loading=
+      document.getElementById(
+        "loading"
+      );
+
+    if(loading){
+      loading.style.display="none";
+    }
+
+    startApp();
+
+  },
+  5000
+);
+
+
+/* ONE SECOND APP TIMER */
+
+setInterval(
+  function(){
+
+    dailyCheck();
+
+    timer();
+
+    update();
+
+    updateAds();
+
+  },
+  1000
+);
+  /* FINAL INITIALIZATION */
+
+/*
+  Keep the app on Home when the
+  page is first opened.
+*/
+
+showPage("homePage");
+
+update();
+updateAds();
+updateTasks();
+updateWallet();
+getMemo();
+timer();
+
+
+/* KEEP TELEGRAM MINI APP READY */
+
+if(
+  tg &&
+  typeof tg.ready==="function"
+){
+  tg.ready();
+}
+
+
+/* PREVENT ACCIDENTAL FORM SUBMIT */
+
+document.addEventListener(
+  "keydown",
+  function(){
+    if(
+      arguments[0] &&
+      arguments[0].key==="Enter"
+    ){
+      const active=
+        document.activeElement;
+
+      if(
+        active &&
+        active.tagName==="INPUT"
+      ){
+        arguments[0].preventDefault();
+      }
+    }
+  }
+);
+
+</script>
+
+</body>
+</html>
