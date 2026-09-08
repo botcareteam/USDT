@@ -1,16 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<meta
+  name="viewport"
+  content="width=device-width,initial-scale=1.0"
+>
 
 <title>Ads Orbit - Ad Test</title>
+
 
 <!-- Telegram SDK -->
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
+
 <!-- AdExora SDK - App ID 2189 -->
 <script src="https://adexora.com/cdn/ads.js?id=2189"></script>
+
 
 <style>
 
@@ -116,6 +124,8 @@ body{
   margin-top:20px;
   color:#9da7b5;
   font-size:13px;
+  line-height:1.5;
+  word-break:break-word;
 }
 
 .success{
@@ -126,16 +136,27 @@ body{
   color:#ff7070;
 }
 
+.info{
+  color:#7db7ff;
+}
+
 </style>
+
 </head>
 
+
 <body>
+
 
 <div class="header">
   ADS ORBIT / ONLINE
 </div>
 
+
 <div class="home">
+
+
+  <!-- BALANCE -->
 
   <div class="balanceBox">
 
@@ -154,12 +175,12 @@ body{
   </div>
 
 
+  <!-- ADS -->
+
   <div class="sectionTitle">
     📺 Ads Earning
   </div>
 
-
-  <!-- AD 1 -->
 
   <div
     class="adCard"
@@ -194,22 +215,25 @@ body{
   </div>
 
 
+  <!-- STATUS -->
+
   <div
-    class="status"
+    class="status info"
     id="status"
   >
-    Tap the advertisement box to test AdExora.
+    Checking AdExora SDK...
   </div>
+
 
 </div>
 
 
 <script>
 
-let adLoading=false;
 
-
-/* TELEGRAM */
+/* ==============================
+   TELEGRAM
+============================== */
 
 const tg =
   window.Telegram &&
@@ -218,41 +242,80 @@ const tg =
     : null;
 
 
-/* AD TEST */
+/* ==============================
+   ELEMENTS
+============================== */
+
+const status =
+  document.getElementById("status");
+
+const button =
+  document.getElementById("adButton");
+
+const card =
+  document.getElementById("adCard1");
+
+
+/* ==============================
+   SDK CHECK
+============================== */
+
+if(
+  typeof window.showAdexora ===
+  "function"
+){
+
+  status.className =
+    "status success";
+
+  status.textContent =
+    "AdExora SDK Loaded ✅";
+
+}else{
+
+  status.className =
+    "status error";
+
+  status.textContent =
+    "AdExora SDK NOT Loaded ❌";
+
+}
+
+
+/* ==============================
+   WATCH AD
+============================== */
 
 async function watchAd(){
 
-  if(adLoading){
+  if(
+    button.disabled
+  ){
+
     return;
+
   }
 
-  const button =
-    document.getElementById("adButton");
-
-  const card =
-    document.getElementById("adCard1");
-
-  const status =
-    document.getElementById("status");
-
-
-  adLoading=true;
 
   button.disabled=true;
-  button.textContent="LOADING...";
 
-  card.style.opacity="0.7";
+  button.textContent=
+    "LOADING...";
 
-  status.className="status";
+  card.style.opacity=
+    "0.7";
+
+  status.className=
+    "status info";
+
   status.textContent=
-    "Opening AdExora advertisement...";
+    "Checking AdExora...";
 
 
   try{
 
-    /*
-      Check AdExora SDK
-    */
+
+    /* CHECK SDK */
 
     if(
       typeof window.showAdexora !==
@@ -266,64 +329,94 @@ async function watchAd(){
     }
 
 
-    /*
-      Open AdExora ad
-    */
+    status.textContent=
+      "SDK found ✅ Opening advertisement...";
+
+
+    /* OPEN AD */
 
     await window.showAdexora();
 
 
-    /*
-      Ad completed
-    */
+    /* SUCCESS */
 
-    button.textContent="AD COMPLETED ✓";
-
-    status.className="status success";
+    status.className=
+      "status success";
 
     status.textContent=
-      "Ad completed successfully!";
+      "AD COMPLETED SUCCESSFULLY ✅";
+
+
+    button.textContent=
+      "AD COMPLETED ✓";
 
 
   }catch(error){
 
+
+    /* CONSOLE ERROR */
+
     console.log(
-      "AdExora Error:",
+      "AdExora FULL ERROR:",
       error
     );
 
-    button.disabled=false;
 
-    button.textContent="WATCH AD";
+    console.log(
+      "Error message:",
+      error.message
+    );
 
-    status.className="status error";
+
+    console.log(
+      "Error name:",
+      error.name
+    );
+
+
+    /* SCREEN ERROR */
+
+    status.className=
+      "status error";
 
     status.textContent=
-      "Ad failed to open. Check console.";
+      "ERROR: " +
+      (error.message || "Unknown error");
+
+
+    button.disabled=false;
+
+    button.textContent=
+      "WATCH AD";
+
 
   }finally{
 
-    adLoading=false;
-
-    card.style.opacity="1";
+    card.style.opacity=
+      "1";
 
   }
 
 }
 
 
-/* TELEGRAM READY */
+/* ==============================
+   TELEGRAM READY
+============================== */
 
 if(
   tg &&
-  typeof tg.ready==="function"
+  typeof tg.ready ===
+  "function"
 ){
 
   tg.ready();
 
 }
 
+
 </script>
 
+
 </body>
-</html>
+  </html>
