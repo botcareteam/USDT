@@ -11,14 +11,10 @@
 
 <title>Ads Orbit - Ad Test</title>
 
-
-<!-- Telegram SDK -->
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
-
-<!-- AdExora SDK - App ID 2189 -->
-<script src="https://adexora.com/cdn/ads.js?id=2189"></script>
-
+<!-- APPROVED AdExora App ID -->
+<script src="https://adexora.com/cdn/ads.js?id=650"></script>
 
 <style>
 
@@ -125,7 +121,6 @@ body{
   color:#9da7b5;
   font-size:13px;
   line-height:1.5;
-  word-break:break-word;
 }
 
 .success{
@@ -136,27 +131,17 @@ body{
   color:#ff7070;
 }
 
-.info{
-  color:#7db7ff;
-}
-
 </style>
 
 </head>
 
-
 <body>
-
 
 <div class="header">
   ADS ORBIT / ONLINE
 </div>
 
-
 <div class="home">
-
-
-  <!-- BALANCE -->
 
   <div class="balanceBox">
 
@@ -174,8 +159,6 @@ body{
 
   </div>
 
-
-  <!-- ADS -->
 
   <div class="sectionTitle">
     📺 Ads Earning
@@ -201,7 +184,7 @@ body{
     </div>
 
     <div class="adReward">
-      Watch advertisement to continue
+      Watch advertisement to earn reward
     </div>
 
     <button
@@ -215,87 +198,85 @@ body{
   </div>
 
 
-  <!-- STATUS -->
-
   <div
-    class="status info"
+    class="status"
     id="status"
   >
-    Checking AdExora SDK...
+    AdExora App ID 650 • Ready
   </div>
-
 
 </div>
 
 
 <script>
 
-
-/* ==============================
-   TELEGRAM
-============================== */
-
-const tg =
-  window.Telegram &&
-  window.Telegram.WebApp
-    ? window.Telegram.WebApp
-    : null;
+let adLoading=false;
 
 
-/* ==============================
-   ELEMENTS
-============================== */
+/* =========================
+   CHECK ADExora
+========================= */
 
-const status =
-  document.getElementById("status");
+function checkAdexora(){
 
-const button =
-  document.getElementById("adButton");
+  const status=
+    document.getElementById("status");
 
-const card =
-  document.getElementById("adCard1");
+  if(
+    typeof window.showAdexora ===
+    "function"
+  ){
 
+    status.className=
+      "status success";
 
-/* ==============================
-   SDK CHECK
-============================== */
+    status.textContent=
+      "AdExora SDK Loaded ✅";
 
-if(
-  typeof window.showAdexora ===
-  "function"
-){
+    return true;
 
-  status.className =
-    "status success";
+  }
 
-  status.textContent =
-    "AdExora SDK Loaded ✅";
-
-}else{
-
-  status.className =
+  status.className=
     "status error";
 
-  status.textContent =
+  status.textContent=
     "AdExora SDK NOT Loaded ❌";
+
+  return false;
 
 }
 
 
-/* ==============================
+/* =========================
    WATCH AD
-============================== */
+========================= */
 
 async function watchAd(){
 
-  if(
-    button.disabled
-  ){
-
+  if(adLoading){
     return;
-
   }
 
+
+  const button=
+    document.getElementById("adButton");
+
+  const card=
+    document.getElementById("adCard1");
+
+  const status=
+    document.getElementById("status");
+
+
+  if(
+    !checkAdexora()
+  ){
+    return;
+  }
+
+
+  adLoading=true;
 
   button.disabled=true;
 
@@ -306,82 +287,46 @@ async function watchAd(){
     "0.7";
 
   status.className=
-    "status info";
+    "status";
 
   status.textContent=
-    "Checking AdExora...";
+    "Opening advertisement...";
 
 
   try{
 
-
-    /* CHECK SDK */
-
-    if(
-      typeof window.showAdexora !==
-      "function"
-    ){
-
-      throw new Error(
-        "showAdexora function not found"
-      );
-
-    }
-
-
-    status.textContent=
-      "SDK found ✅ Opening advertisement...";
-
-
-    /* OPEN AD */
-
     await window.showAdexora();
 
 
-    /* SUCCESS */
+    /* AD COMPLETED */
 
     status.className=
       "status success";
 
     status.textContent=
-      "AD COMPLETED SUCCESSFULLY ✅";
-
+      "Advertisement completed successfully! ✅";
 
     button.textContent=
-      "AD COMPLETED ✓";
+      "COMPLETED ✓";
 
 
   }catch(error){
 
-
-    /* CONSOLE ERROR */
-
     console.log(
-      "AdExora FULL ERROR:",
+      "AdExora Error:",
       error
     );
 
-
-    console.log(
-      "Error message:",
-      error.message
-    );
-
-
-    console.log(
-      "Error name:",
-      error.name
-    );
-
-
-    /* SCREEN ERROR */
 
     status.className=
       "status error";
 
     status.textContent=
-      "ERROR: " +
-      (error.message || "Unknown error");
+      "Ad Error: "+
+      (
+        error.message ||
+        "Unable to show advertisement"
+      );
 
 
     button.disabled=false;
@@ -389,8 +334,9 @@ async function watchAd(){
     button.textContent=
       "WATCH AD";
 
-
   }finally{
+
+    adLoading=false;
 
     card.style.opacity=
       "1";
@@ -400,23 +346,28 @@ async function watchAd(){
 }
 
 
-/* ==============================
-   TELEGRAM READY
-============================== */
+/* =========================
+   TELEGRAM
+========================= */
 
 if(
-  tg &&
-  typeof tg.ready ===
-  "function"
+  window.Telegram &&
+  window.Telegram.WebApp
 ){
 
-  tg.ready();
+  window.Telegram.WebApp.ready();
 
 }
 
 
-</script>
+/* INITIAL SDK CHECK */
 
+setTimeout(
+  checkAdexora,
+  1000
+);
+
+</script>
 
 </body>
   </html>
