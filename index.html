@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>Ads Orbit - Ad Test</title>
+
+<!-- Telegram SDK -->
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+<!-- AdExora SDK - App ID 2189 -->
+<script src="https://adexora.com/cdn/ads.js?id=2189"></script>
+
+<style>
+
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  background:#080b12;
+  color:#fff;
+  font-family:Arial,sans-serif;
+}
+
+.header{
+  padding:20px;
+  text-align:center;
+  font-size:20px;
+  font-weight:bold;
+  border-bottom:1px solid #202633;
+}
+
+.home{
+  padding:20px;
+}
+
+.balanceBox{
+  background:#111722;
+  border:1px solid #252d3a;
+  border-radius:18px;
+  padding:22px;
+  text-align:center;
+  margin-bottom:25px;
+}
+
+.balanceTitle{
+  color:#9aa4b2;
+  font-size:14px;
+}
+
+.balance{
+  font-size:32px;
+  font-weight:bold;
+  margin:10px 0;
+}
+
+.network{
+  color:#7f8998;
+  font-size:12px;
+}
+
+.sectionTitle{
+  font-size:18px;
+  font-weight:bold;
+  margin-bottom:12px;
+}
+
+.adCard{
+  background:#111722;
+  border:1px solid #2a3342;
+  border-radius:18px;
+  padding:20px;
+  margin-bottom:15px;
+  cursor:pointer;
+  transition:.2s;
+}
+
+.adCard:active{
+  transform:scale(.98);
+}
+
+.adTop{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.adTitle{
+  font-size:16px;
+  font-weight:bold;
+}
+
+.adReward{
+  font-size:13px;
+  color:#9da7b5;
+  margin-top:8px;
+}
+
+.adButton{
+  width:100%;
+  margin-top:18px;
+  padding:13px;
+  border:0;
+  border-radius:12px;
+  background:#fff;
+  color:#000;
+  font-weight:bold;
+  font-size:14px;
+}
+
+.status{
+  text-align:center;
+  margin-top:20px;
+  color:#9da7b5;
+  font-size:13px;
+}
+
+.success{
+  color:#58e39b;
+}
+
+.error{
+  color:#ff7070;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="header">
+  ADS ORBIT / ONLINE
+</div>
+
+<div class="home">
+
+  <div class="balanceBox">
+
+    <div class="balanceTitle">
+      Total Earning
+    </div>
+
+    <div class="balance">
+      <span id="balance">0.00</span> USDT
+    </div>
+
+    <div class="network">
+      BEP20 Network
+    </div>
+
+  </div>
+
+
+  <div class="sectionTitle">
+    📺 Ads Earning
+  </div>
+
+
+  <!-- AD 1 -->
+
+  <div
+    class="adCard"
+    id="adCard1"
+    onclick="watchAd()"
+  >
+
+    <div class="adTop">
+
+      <div class="adTitle">
+        Advertisement #1
+      </div>
+
+      <div>
+        🎁
+      </div>
+
+    </div>
+
+    <div class="adReward">
+      Watch advertisement to continue
+    </div>
+
+    <button
+      class="adButton"
+      id="adButton"
+      type="button"
+    >
+      WATCH AD
+    </button>
+
+  </div>
+
+
+  <div
+    class="status"
+    id="status"
+  >
+    Tap the advertisement box to test AdExora.
+  </div>
+
+</div>
+
+
+<script>
+
+let adLoading=false;
+
+
+/* TELEGRAM */
+
+const tg =
+  window.Telegram &&
+  window.Telegram.WebApp
+    ? window.Telegram.WebApp
+    : null;
+
+
+/* AD TEST */
+
+async function watchAd(){
+
+  if(adLoading){
+    return;
+  }
+
+  const button =
+    document.getElementById("adButton");
+
+  const card =
+    document.getElementById("adCard1");
+
+  const status =
+    document.getElementById("status");
+
+
+  adLoading=true;
+
+  button.disabled=true;
+  button.textContent="LOADING...";
+
+  card.style.opacity="0.7";
+
+  status.className="status";
+  status.textContent=
+    "Opening AdExora advertisement...";
+
+
+  try{
+
+    /*
+      Check AdExora SDK
+    */
+
+    if(
+      typeof window.showAdexora !==
+      "function"
+    ){
+
+      throw new Error(
+        "showAdexora function not found"
+      );
+
+    }
+
+
+    /*
+      Open AdExora ad
+    */
+
+    await window.showAdexora();
+
+
+    /*
+      Ad completed
+    */
+
+    button.textContent="AD COMPLETED ✓";
+
+    status.className="status success";
+
+    status.textContent=
+      "Ad completed successfully!";
+
+
+  }catch(error){
+
+    console.log(
+      "AdExora Error:",
+      error
+    );
+
+    button.disabled=false;
+
+    button.textContent="WATCH AD";
+
+    status.className="status error";
+
+    status.textContent=
+      "Ad failed to open. Check console.";
+
+  }finally{
+
+    adLoading=false;
+
+    card.style.opacity="1";
+
+  }
+
+}
+
+
+/* TELEGRAM READY */
+
+if(
+  tg &&
+  typeof tg.ready==="function"
+){
+
+  tg.ready();
+
+}
+
+</script>
+
+</body>
+</html>
