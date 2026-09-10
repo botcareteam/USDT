@@ -1,352 +1,224 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html>
 <head>
-
 <meta charset="UTF-8">
-
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Ads Orbit</title>
 
-
-<!-- Telegram -->
 <script src="https://telegram.org/js/telegram-web-app.js?56"></script>
-
-
-<!-- Adexium -->
-<script
-type="text/javascript"
-src="https://cdn.tgads.space/assets/js/adexium-widget.min.js">
-</script>
-
-
-<script>
-
-document.addEventListener(
-  "DOMContentLoaded",
-  function(){
-
-    const status =
-      document.getElementById("status");
-
-
-    try{
-
-      window.adexiumWidget =
-        new AdexiumWidget({
-
-          wid:
-          "6cc4bbab-f00d-4ba8-ba06-206215aeeb3b",
-
-          adFormat:
-          "interstitial"
-
-        });
-
-
-      /*
-        Official Adexium
-        automatic mode
-      */
-
-      window.adexiumWidget.autoMode();
-
-
-      status.className =
-        "status success";
-
-      status.textContent =
-        "Adexium initialized ✅";
-
-
-    }catch(error){
-
-      console.log(
-        "Adexium error:",
-        error
-      );
-
-      status.className =
-        "status error";
-
-      status.textContent =
-        "Adexium initialization failed ❌";
-
-    }
-
-  }
-);
-
-</script>
-
+<script src="https://cdn.tgads.space/assets/js/adexium-widget.min.js"></script>
 
 <style>
-
 *{
   box-sizing:border-box;
 }
 
 body{
   margin:0;
-  background:#080b12;
-  color:#fff;
+  background:#07090d;
+  color:white;
   font-family:Arial,sans-serif;
 }
 
+.app{
+  max-width:520px;
+  margin:auto;
+  padding:20px;
+}
+
 .header{
-  padding:20px;
   text-align:center;
-  font-size:20px;
+  padding:25px 0;
+}
+
+.logo{
+  font-size:42px;
+}
+
+.title{
+  font-size:25px;
   font-weight:bold;
-  border-bottom:1px solid #202633;
+  margin-top:8px;
 }
 
-.home{
-  padding:20px;
-}
-
-.balanceBox{
-  background:#111722;
-  border:1px solid #252d3a;
+.card{
+  background:#10141c;
+  border:1px solid #202936;
   border-radius:18px;
   padding:22px;
-  text-align:center;
-  margin-bottom:25px;
+  margin-top:18px;
 }
 
-.balanceTitle{
-  color:#9aa4b2;
+.balance-title{
+  color:#9ca8b8;
   font-size:14px;
 }
 
 .balance{
-  font-size:32px;
+  font-size:30px;
   font-weight:bold;
-  margin:10px 0;
+  margin-top:8px;
 }
 
-.network{
-  color:#7f8998;
-  font-size:12px;
+.coin{
+  color:#20d889;
 }
 
-.sectionTitle{
-  font-size:18px;
-  font-weight:bold;
-  margin-bottom:12px;
-}
-
-.adCard{
-  background:#111722;
-  border:1px solid #2a3342;
-  border-radius:18px;
-  padding:20px;
-  margin-bottom:15px;
+.ad-card{
   cursor:pointer;
+  text-align:center;
+  transition:.15s;
 }
 
-.adCard:active{
-  transform:scale(.98);
+.ad-card:active{
+  transform:scale(.97);
 }
 
-.adTop{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
+.ad-icon{
+  font-size:42px;
 }
 
-.adTitle{
-  font-size:16px;
+.ad-title{
+  font-size:20px;
   font-weight:bold;
-}
-
-.adIcon{
-  font-size:28px;
-}
-
-.adText{
-  color:#9da7b5;
-  font-size:13px;
   margin-top:10px;
-  line-height:1.5;
 }
 
-.adButton{
-  width:100%;
+.ad-text{
+  color:#8f9aaa;
+  margin-top:7px;
+}
+
+.watch{
   margin-top:18px;
-  padding:13px;
-  border:0;
-  border-radius:12px;
   background:#20d889;
   color:#06100b;
+  border:0;
+  width:100%;
+  padding:14px;
+  border-radius:12px;
+  font-size:16px;
   font-weight:bold;
 }
 
 .status{
   text-align:center;
-  margin-top:20px;
+  color:#7f8a99;
   font-size:13px;
-  line-height:1.5;
+  margin-top:15px;
 }
-
-.success{
-  color:#58e39b;
-}
-
-.error{
-  color:#ff7070;
-}
-
 </style>
-
 </head>
-
 
 <body>
 
+<div class="app">
 
-<div class="header">
-  ADS ORBIT / ONLINE
-</div>
+  <div class="header">
+    <div class="logo">🌐</div>
+    <div class="title">ADS ORBIT</div>
+  </div>
 
-
-<div class="home">
-
-
-  <!-- BALANCE -->
-
-  <div class="balanceBox">
-
-    <div class="balanceTitle">
-      Total Earning
-    </div>
-
+  <div class="card">
+    <div class="balance-title">TOTAL EARNING</div>
     <div class="balance">
-      <span id="balance">0.00</span>
-      USDT
+      <span class="coin">●</span> 0.00 USDT
     </div>
-
-    <div class="network">
-      BEP20 Network
-    </div>
-
+    <div class="balance-title">BEP20</div>
   </div>
-
-
-  <!-- ADS -->
-
-  <div class="sectionTitle">
-    📺 Ads Earning
-  </div>
-
 
   <div
-    class="adCard"
-    onclick="requestAd()"
+    class="card ad-card"
+    id="adButton"
   >
 
-    <div class="adTop">
+    <div class="ad-icon">🎁</div>
 
-      <div class="adTitle">
-        Advertisement #1
-      </div>
-
-      <div class="adIcon">
-        📺
-      </div>
-
+    <div class="ad-title">
+      Watch Ad & Earn
     </div>
 
-
-    <div class="adText">
-      Tap anywhere on this box to request
-      an advertisement.
+    <div class="ad-text">
+      Tap here to watch advertisement
     </div>
 
-
-    <button
-      class="adButton"
-      type="button"
-    >
+    <button class="watch">
       WATCH AD
     </button>
 
   </div>
 
-
-  <div
-    id="status"
-    class="status"
-  >
-    Initializing Adexium...
+  <div class="status" id="status">
+    Ready
   </div>
-
 
 </div>
 
 
 <script>
 
+document.addEventListener("DOMContentLoaded", function(){
 
-/* =========================
-   TELEGRAM READY
-========================= */
+  const adexiumAds = new AdexiumWidget({
+    wid: "6cc4bbab-f00d-4ba8-ba06-206215aeeb3b",
+    adFormat: "interstitial",
+    debug: true
+  });
 
-if(
-  window.Telegram &&
-  window.Telegram.WebApp
-){
-
-  window.Telegram.WebApp.ready();
-
-}
+  const adButton = document.getElementById("adButton");
+  const status = document.getElementById("status");
 
 
-/* =========================
-   AD REQUEST
-========================= */
+  adButton.onclick = function(){
 
-function requestAd(){
+    status.innerText = "Loading advertisement...";
 
-  const status =
-    document.getElementById("status");
+    adexiumAds.requestAd("interstitial");
+
+  };
 
 
-  /*
-    Important:
-    Adexium autoMode() is already
-    controlling ad delivery.
+  adexiumAds.on("adReceived", function(ad){
 
-    We don't call an undocumented
-    showAd() function here.
-  */
+    status.innerText = "Advertisement ready";
 
-  if(
-    window.adexiumWidget
-  ){
+    adexiumAds.displayAd(ad);
 
-    status.className =
-      "status success";
+  });
 
-    status.textContent =
-      "Ad request sent. Waiting for Adexium...";
 
-  }else{
+  adexiumAds.on("adDisplayed", function(){
 
-    status.className =
-      "status error";
+    status.innerText = "Advertisement is playing...";
 
-    status.textContent =
-      "Adexium is not initialized ❌";
+  });
 
-  }
 
-}
+  adexiumAds.on("adPlaybackCompleted", function(){
+
+    status.innerText = "Advertisement completed ✓";
+
+  });
+
+
+  adexiumAds.on("adClosed", function(){
+
+    status.innerText = "Ready";
+
+  });
+
+
+  adexiumAds.on("noAdFound", function(){
+
+    status.innerText =
+      "No ad available. Please try again.";
+
+  });
+
+});
 
 </script>
 
-
 </body>
-
 </html>
