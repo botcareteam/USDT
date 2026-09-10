@@ -5,22 +5,79 @@
 
 <meta charset="UTF-8">
 
-<meta
-  name="viewport"
-  content="width=device-width, initial-scale=1.0"
->
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 
-<title>Ads Orbit - Adexium Test</title>
+<title>Ads Orbit</title>
 
 
-<!-- Telegram Mini App SDK -->
+<!-- Telegram -->
 <script src="https://telegram.org/js/telegram-web-app.js?56"></script>
 
 
 <!-- Adexium -->
 <script
-  type="text/javascript"
-  src="https://cdn.tgads.space/assets/js/adexium-widget.min.js">
+type="text/javascript"
+src="https://cdn.tgads.space/assets/js/adexium-widget.min.js">
+</script>
+
+
+<script>
+
+document.addEventListener(
+  "DOMContentLoaded",
+  function(){
+
+    const status =
+      document.getElementById("status");
+
+
+    try{
+
+      window.adexiumWidget =
+        new AdexiumWidget({
+
+          wid:
+          "6cc4bbab-f00d-4ba8-ba06-206215aeeb3b",
+
+          adFormat:
+          "interstitial"
+
+        });
+
+
+      /*
+        Official Adexium
+        automatic mode
+      */
+
+      window.adexiumWidget.autoMode();
+
+
+      status.className =
+        "status success";
+
+      status.textContent =
+        "Adexium initialized ✅";
+
+
+    }catch(error){
+
+      console.log(
+        "Adexium error:",
+        error
+      );
+
+      status.className =
+        "status error";
+
+      status.textContent =
+        "Adexium initialization failed ❌";
+
+    }
+
+  }
+);
+
 </script>
 
 
@@ -80,9 +137,6 @@ body{
   margin-bottom:12px;
 }
 
-
-/* AD CARD */
-
 .adCard{
   background:#111722;
   border:1px solid #2a3342;
@@ -90,7 +144,6 @@ body{
   padding:20px;
   margin-bottom:15px;
   cursor:pointer;
-  transition:.2s;
 }
 
 .adCard:active{
@@ -128,13 +181,11 @@ body{
   background:#20d889;
   color:#06100b;
   font-weight:bold;
-  font-size:14px;
 }
 
 .status{
   text-align:center;
   margin-top:20px;
-  color:#9da7b5;
   font-size:13px;
   line-height:1.5;
 }
@@ -172,7 +223,8 @@ body{
     </div>
 
     <div class="balance">
-      <span id="balance">0.00</span> USDT
+      <span id="balance">0.00</span>
+      USDT
     </div>
 
     <div class="network">
@@ -189,12 +241,9 @@ body{
   </div>
 
 
-  <!-- WHOLE CARD IS CLICKABLE -->
-
   <div
     class="adCard"
-    id="adCard"
-    onclick="watchAd()"
+    onclick="requestAd()"
   >
 
     <div class="adTop">
@@ -211,14 +260,13 @@ body{
 
 
     <div class="adText">
-      Watch this advertisement to continue.
-      Tap anywhere on this card.
+      Tap anywhere on this box to request
+      an advertisement.
     </div>
 
 
     <button
       class="adButton"
-      id="adButton"
       type="button"
     >
       WATCH AD
@@ -231,7 +279,7 @@ body{
     id="status"
     class="status"
   >
-    Adexium is initializing...
+    Initializing Adexium...
   </div>
 
 
@@ -241,9 +289,9 @@ body{
 <script>
 
 
-/* =================================
-   TELEGRAM
-================================= */
+/* =========================
+   TELEGRAM READY
+========================= */
 
 if(
   window.Telegram &&
@@ -255,206 +303,42 @@ if(
 }
 
 
-/* =================================
-   ADEIXUM
-================================= */
+/* =========================
+   AD REQUEST
+========================= */
 
-let adexiumWidget=null;
+function requestAd(){
 
-let adReady=false;
-
-let adLoading=false;
-
-
-/* =================================
-   INITIALIZE
-================================= */
-
-document.addEventListener(
-  "DOMContentLoaded",
-  function(){
-
-    const status=
-      document.getElementById("status");
-
-
-    try{
-
-      adexiumWidget =
-        new AdexiumWidget({
-
-          wid:
-            "6cc4bbab-f00d-4ba8-ba06-206215aeeb3b",
-
-          adFormat:
-            "interstitial"
-
-        });
-
-
-      /*
-        Start Adexium automatic mode
-      */
-
-      adexiumWidget.autoMode();
-
-
-      adReady=true;
-
-
-      status.className=
-        "status success";
-
-      status.textContent=
-        "Adexium initialized ✅";
-
-
-    }catch(error){
-
-      console.log(
-        "Adexium initialization error:",
-        error
-      );
-
-
-      status.className=
-        "status error";
-
-      status.textContent=
-        "Adexium initialization failed ❌";
-
-    }
-
-  }
-);
-
-
-/* =================================
-   WATCH AD
-================================= */
-
-function watchAd(){
-
-  if(adLoading){
-
-    return;
-
-  }
-
-
-  const button=
-    document.getElementById("adButton");
-
-  const card=
-    document.getElementById("adCard");
-
-  const status=
+  const status =
     document.getElementById("status");
 
 
-  if(!adReady){
+  /*
+    Important:
+    Adexium autoMode() is already
+    controlling ad delivery.
 
-    status.className=
+    We don't call an undocumented
+    showAd() function here.
+  */
+
+  if(
+    window.adexiumWidget
+  ){
+
+    status.className =
+      "status success";
+
+    status.textContent =
+      "Ad request sent. Waiting for Adexium...";
+
+  }else{
+
+    status.className =
       "status error";
 
-    status.textContent=
-      "Ad is not ready yet. Please try again.";
-
-    return;
-
-  }
-
-
-  adLoading=true;
-
-  button.disabled=true;
-
-  button.textContent=
-    "OPENING AD...";
-
-  card.style.opacity=
-    "0.7";
-
-  status.className=
-    "status";
-
-  status.textContent=
-    "Opening advertisement...";
-
-
-  try{
-
-    /*
-      Adexium autoMode handles
-      advertisement display.
-    */
-
-    if(
-      adexiumWidget &&
-      typeof adexiumWidget.showAd ===
-      "function"
-    ){
-
-      adexiumWidget.showAd();
-
-    }
-
-
-    /*
-      Give the widget time to open.
-    */
-
-    setTimeout(
-      function(){
-
-        button.disabled=false;
-
-        button.textContent=
-          "WATCH AD";
-
-        card.style.opacity=
-          "1";
-
-        status.className=
-          "status success";
-
-        status.textContent=
-          "Ad request sent to Adexium ✅";
-
-        adLoading=false;
-
-      },
-      1500
-    );
-
-
-  }catch(error){
-
-    console.log(
-      "Adexium Error:",
-      error
-    );
-
-
-    button.disabled=false;
-
-    button.textContent=
-      "WATCH AD";
-
-    card.style.opacity=
-      "1";
-
-    status.className=
-      "status error";
-
-    status.textContent=
-      "Ad error: "+
-      (
-        error.message ||
-        "Unable to open ad"
-      );
-
-    adLoading=false;
+    status.textContent =
+      "Adexium is not initialized ❌";
 
   }
 
@@ -464,4 +348,5 @@ function watchAd(){
 
 
 </body>
-  </html>
+
+</html>
