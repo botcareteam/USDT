@@ -1,20 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 
 <meta charset="UTF-8">
 
 <meta
   name="viewport"
-  content="width=device-width,initial-scale=1.0"
+  content="width=device-width, initial-scale=1.0"
 >
 
-<title>Ads Orbit - Ad Test</title>
+<title>Ads Orbit - Adexium Test</title>
 
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
 
-<!-- APPROVED AdExora App ID -->
-<script src="https://adexora.com/cdn/ads.js?id=650"></script>
+<!-- Telegram Mini App SDK -->
+<script src="https://telegram.org/js/telegram-web-app.js?56"></script>
+
+
+<!-- Adexium -->
+<script
+  type="text/javascript"
+  src="https://cdn.tgads.space/assets/js/adexium-widget.min.js">
+</script>
+
 
 <style>
 
@@ -72,6 +80,9 @@ body{
   margin-bottom:12px;
 }
 
+
+/* AD CARD */
+
 .adCard{
   background:#111722;
   border:1px solid #2a3342;
@@ -97,10 +108,15 @@ body{
   font-weight:bold;
 }
 
-.adReward{
-  font-size:13px;
+.adIcon{
+  font-size:28px;
+}
+
+.adText{
   color:#9da7b5;
-  margin-top:8px;
+  font-size:13px;
+  margin-top:10px;
+  line-height:1.5;
 }
 
 .adButton{
@@ -109,8 +125,8 @@ body{
   padding:13px;
   border:0;
   border-radius:12px;
-  background:#fff;
-  color:#000;
+  background:#20d889;
+  color:#06100b;
   font-weight:bold;
   font-size:14px;
 }
@@ -135,13 +151,19 @@ body{
 
 </head>
 
+
 <body>
+
 
 <div class="header">
   ADS ORBIT / ONLINE
 </div>
 
+
 <div class="home">
+
+
+  <!-- BALANCE -->
 
   <div class="balanceBox">
 
@@ -160,14 +182,18 @@ body{
   </div>
 
 
+  <!-- ADS -->
+
   <div class="sectionTitle">
     📺 Ads Earning
   </div>
 
 
+  <!-- WHOLE CARD IS CLICKABLE -->
+
   <div
     class="adCard"
-    id="adCard1"
+    id="adCard"
     onclick="watchAd()"
   >
 
@@ -177,15 +203,18 @@ body{
         Advertisement #1
       </div>
 
-      <div>
-        🎁
+      <div class="adIcon">
+        📺
       </div>
 
     </div>
 
-    <div class="adReward">
-      Watch advertisement to earn reward
+
+    <div class="adText">
+      Watch this advertisement to continue.
+      Tap anywhere on this card.
     </div>
+
 
     <button
       class="adButton"
@@ -199,63 +228,117 @@ body{
 
 
   <div
-    class="status"
     id="status"
+    class="status"
   >
-    AdExora App ID 650 • Ready
+    Adexium is initializing...
   </div>
+
 
 </div>
 
 
 <script>
 
-let adLoading=false;
 
+/* =================================
+   TELEGRAM
+================================= */
 
-/* =========================
-   CHECK ADExora
-========================= */
+if(
+  window.Telegram &&
+  window.Telegram.WebApp
+){
 
-function checkAdexora(){
-
-  const status=
-    document.getElementById("status");
-
-  if(
-    typeof window.showAdexora ===
-    "function"
-  ){
-
-    status.className=
-      "status success";
-
-    status.textContent=
-      "AdExora SDK Loaded ✅";
-
-    return true;
-
-  }
-
-  status.className=
-    "status error";
-
-  status.textContent=
-    "AdExora SDK NOT Loaded ❌";
-
-  return false;
+  window.Telegram.WebApp.ready();
 
 }
 
 
-/* =========================
-   WATCH AD
-========================= */
+/* =================================
+   ADEIXUM
+================================= */
 
-async function watchAd(){
+let adexiumWidget=null;
+
+let adReady=false;
+
+let adLoading=false;
+
+
+/* =================================
+   INITIALIZE
+================================= */
+
+document.addEventListener(
+  "DOMContentLoaded",
+  function(){
+
+    const status=
+      document.getElementById("status");
+
+
+    try{
+
+      adexiumWidget =
+        new AdexiumWidget({
+
+          wid:
+            "6cc4bbab-f00d-4ba8-ba06-206215aeeb3b",
+
+          adFormat:
+            "interstitial"
+
+        });
+
+
+      /*
+        Start Adexium automatic mode
+      */
+
+      adexiumWidget.autoMode();
+
+
+      adReady=true;
+
+
+      status.className=
+        "status success";
+
+      status.textContent=
+        "Adexium initialized ✅";
+
+
+    }catch(error){
+
+      console.log(
+        "Adexium initialization error:",
+        error
+      );
+
+
+      status.className=
+        "status error";
+
+      status.textContent=
+        "Adexium initialization failed ❌";
+
+    }
+
+  }
+);
+
+
+/* =================================
+   WATCH AD
+================================= */
+
+function watchAd(){
 
   if(adLoading){
+
     return;
+
   }
 
 
@@ -263,16 +346,22 @@ async function watchAd(){
     document.getElementById("adButton");
 
   const card=
-    document.getElementById("adCard1");
+    document.getElementById("adCard");
 
   const status=
     document.getElementById("status");
 
 
-  if(
-    !checkAdexora()
-  ){
+  if(!adReady){
+
+    status.className=
+      "status error";
+
+    status.textContent=
+      "Ad is not ready yet. Please try again.";
+
     return;
+
   }
 
 
@@ -281,7 +370,7 @@ async function watchAd(){
   button.disabled=true;
 
   button.textContent=
-    "LOADING...";
+    "OPENING AD...";
 
   card.style.opacity=
     "0.7";
@@ -295,38 +384,56 @@ async function watchAd(){
 
   try{
 
-    await window.showAdexora();
+    /*
+      Adexium autoMode handles
+      advertisement display.
+    */
+
+    if(
+      adexiumWidget &&
+      typeof adexiumWidget.showAd ===
+      "function"
+    ){
+
+      adexiumWidget.showAd();
+
+    }
 
 
-    /* AD COMPLETED */
+    /*
+      Give the widget time to open.
+    */
 
-    status.className=
-      "status success";
+    setTimeout(
+      function(){
 
-    status.textContent=
-      "Advertisement completed successfully! ✅";
+        button.disabled=false;
 
-    button.textContent=
-      "COMPLETED ✓";
+        button.textContent=
+          "WATCH AD";
+
+        card.style.opacity=
+          "1";
+
+        status.className=
+          "status success";
+
+        status.textContent=
+          "Ad request sent to Adexium ✅";
+
+        adLoading=false;
+
+      },
+      1500
+    );
 
 
   }catch(error){
 
     console.log(
-      "AdExora Error:",
+      "Adexium Error:",
       error
     );
-
-
-    status.className=
-      "status error";
-
-    status.textContent=
-      "Ad Error: "+
-      (
-        error.message ||
-        "Unable to show advertisement"
-      );
 
 
     button.disabled=false;
@@ -334,40 +441,27 @@ async function watchAd(){
     button.textContent=
       "WATCH AD";
 
-  }finally{
-
-    adLoading=false;
-
     card.style.opacity=
       "1";
+
+    status.className=
+      "status error";
+
+    status.textContent=
+      "Ad error: "+
+      (
+        error.message ||
+        "Unable to open ad"
+      );
+
+    adLoading=false;
 
   }
 
 }
 
-
-/* =========================
-   TELEGRAM
-========================= */
-
-if(
-  window.Telegram &&
-  window.Telegram.WebApp
-){
-
-  window.Telegram.WebApp.ready();
-
-}
-
-
-/* INITIAL SDK CHECK */
-
-setTimeout(
-  checkAdexora,
-  1000
-);
-
 </script>
+
 
 </body>
   </html>
